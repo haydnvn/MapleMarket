@@ -6,14 +6,17 @@ import pandas as pd
 import asyncio
 import json
 import os
+from dotenv import load_dotenv 
 from datetime import datetime
+
+load_dotenv()
 
 # Configuration
 APP_ID = "216150"  # App ID for the game you're monitoring (CS:GO)
 CHECK_INTERVAL = 300  # Check every 5 minutes (300 seconds)
 DATA_FILE = "steam_market_data.json"
 COOKIE = ""  # Add your Steam session cookie here if needed
-TOKEN = ""  # Replace with your actual token in production
+TOKEN = os.getenv('TOKEN')
 
 # Bot setup
 intents = discord.Intents.default()
