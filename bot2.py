@@ -235,12 +235,18 @@ class ItemButton(discord.ui.Button):
             
             if item_data.get("lowest_price"):
                 embed.add_field(name="Lowest Price", value=item_data["lowest_price"], inline=True)
+            else:
+                embed.add_field(name="Lowest Price", value="None", inline=True)
             
             if item_data.get("volume"):
                 embed.add_field(name="Volume (24h)", value=item_data["volume"], inline=True)
+            else:
+                embed.add_field(name="Volume (24h)", value="None", inline=True)
                 
             if item_data.get("median_price"):
                 embed.add_field(name="Median Price", value=item_data["median_price"], inline=True)
+            else:
+                embed.add_field(name="Median Price", value="None", inline=True)
 
             try:
                 buy_order = get_highest_buy_order(self.item_name)
