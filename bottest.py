@@ -19,7 +19,8 @@ APP_ID = "216150"  # App ID for the game you're monitoring (CS:GO)
 CHECK_INTERVAL = 300  # Check every 5 minutes (300 seconds)
 DATA_FILE = "steam_market_data.json"
 COOKIE = ""  # Add your Steam session cookie here if needed
-TOKEN = os.getenv('TOKEN')
+TOKEN = "NDkyNDQ2NjMxODU0MDgwMDEw.G07Y8P.w1xsdVoVhPajtBzn2XFyomXFmPIZBkFKzj0uAs"
+
 # Bot setup
 intents = discord.Intents.default()
 intents.message_content = True
