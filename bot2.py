@@ -13,7 +13,7 @@ APP_ID = "216150"  # App ID for the game you're monitoring (CS:GO)
 CHECK_INTERVAL = 300  # Check every 5 minutes (300 seconds)
 DATA_FILE = "steam_market_data.json"
 COOKIE = ""  # Add your Steam session cookie here if needed
-TOKEN = ""  # Replace with your actual token in production
+TOKEN = "MTM1MjAxMDk3NDg2MDkzNTM0MA.GsBx5A.ikfKfLLQXb1eq4RMYlNlnqtuGPwEVzz90waKtU"  # Replace with your actual token in production
 
 # Bot setup
 intents = discord.Intents.default()
@@ -107,7 +107,7 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
         matching_items = [item for item in all_items if search_query.lower() in item.lower()]
         
         if not matching_items:
-            await interaction.followup.send(f"No items found matching '{search_query}'.", ephemeral=True)
+            await interaction.followup.send(f"No items found matching '{search_query}'.")
             return
         
         if len(matching_items) > 10:
@@ -118,14 +118,7 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
             
             # Create a button for each result
             view = ResultsView(matching_items[:10])
-            
-            try:
-                await interaction.user.send(results_text, view=view)
-                await interaction.followup.send("Search results have been sent to your DMs!", ephemeral=True)
-            except discord.Forbidden:
-                # Fallback to channel if DMs are closed
-                await interaction.followup.send("I couldn't send you a DM. Showing results here instead:", ephemeral=False)
-                await interaction.followup.send(results_text, view=view)
+            await interaction.followup.send(results_text, view=view)
         else:
             # Show all results
             results_text = f"Found {len(matching_items)} items matching '{search_query}':\n"
@@ -134,14 +127,7 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
             
             # Create a button for each result
             view = ResultsView(matching_items)
-            
-            try:
-                await interaction.user.send(results_text, view=view)
-                await interaction.followup.send("Search results have been sent to your DMs!", ephemeral=True)
-            except discord.Forbidden:
-                # Fallback to channel if DMs are closed
-                await interaction.followup.send("I couldn't send you a DM. Showing results here instead:", ephemeral=False)
-                await interaction.followup.send(results_text, view=view)
+            await interaction.followup.send(results_text, view=view)
 
 # Create buttons for item selection
 class ItemButton(discord.ui.Button):
@@ -174,10 +160,11 @@ class ItemButton(discord.ui.Button):
                 embed.add_field(name="Median Price", value=item_data["median_price"], inline=True)
                 
             embed.set_footer(text=f"Requested by {interaction.user.name}")
-            
-            await interaction.followup.send(embed=embed)
+        
+            # Mention the user in the message content
+            await interaction.followup.send(content=f"{interaction.user.mention}, here's your price check:", embed=embed)
         else:
-            await interaction.followup.send(f"Could not retrieve price data for {self.item_name}.", ephemeral=True)
+            await interaction.followup.send(f"{interaction.user.mention}, could not retrieve price data for {self.item_name}.", ephemeral=True)
 
 class ResultsView(discord.ui.View):
     def __init__(self, items):
