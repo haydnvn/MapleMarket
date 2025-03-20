@@ -97,7 +97,7 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
     )
 
     async def on_submit(self, interaction: discord.Interaction):
-        await interaction.response.defer(ephemeral=False, thinking=True)
+        await interaction.response.defer(ephemeral=True, thinking=True)
         search_query = self.query.value
         
         # Load all items
@@ -107,7 +107,7 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
         matching_items = [item for item in all_items if search_query.lower() in item.lower()]
         
         if not matching_items:
-            await interaction.followup.send(f"No items found matching '{search_query}'.")
+            await interaction.followup.send(f"No items found matching '{search_query}'.", ephemeral=True)
             return
         
         if len(matching_items) > 10:
@@ -118,7 +118,14 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
             
             # Create a button for each result
             view = ResultsView(matching_items[:10])
-            await interaction.followup.send(results_text, view=view)
+            
+            try:
+                await interaction.user.send(results_text, view=view)
+                await interaction.followup.send("Search results have been sent to your DMs!", ephemeral=True)
+            except discord.Forbidden:
+                # Fallback to channel if DMs are closed
+                await interaction.followup.send("I couldn't send you a DM. Showing results here instead:", ephemeral=False)
+                await interaction.followup.send(results_text, view=view)
         else:
             # Show all results
             results_text = f"Found {len(matching_items)} items matching '{search_query}':\n"
@@ -127,7 +134,14 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
             
             # Create a button for each result
             view = ResultsView(matching_items)
-            await interaction.followup.send(results_text, view=view)
+            
+            try:
+                await interaction.user.send(results_text, view=view)
+                await interaction.followup.send("Search results have been sent to your DMs!", ephemeral=True)
+            except discord.Forbidden:
+                # Fallback to channel if DMs are closed
+                await interaction.followup.send("I couldn't send you a DM. Showing results here instead:", ephemeral=False)
+                await interaction.followup.send(results_text, view=view)
 
 # Create buttons for item selection
 class ItemButton(discord.ui.Button):
