@@ -1,3 +1,4 @@
+
 import discord
 from discord.ext import commands
 from discord import app_commands
@@ -11,6 +12,7 @@ from datetime import datetime
 import re
 import time
 import urllib.parse
+import csv
 
 load_dotenv()
 
@@ -20,11 +22,10 @@ CHECK_INTERVAL = 300  # Check every 5 minutes (300 seconds)
 DATA_FILE = "steam_market_data.json"
 COOKIE = ""  # Add your Steam session cookie here if needed
 TOKEN = "NDkyNDQ2NjMxODU0MDgwMDEw.G07Y8P.w1xsdVoVhPajtBzn2XFyomXFmPIZBkFKzj0uAs"
-
 # Bot setup
 intents = discord.Intents.default()
 intents.message_content = True
-intents.voice_states = True  # Required for voice state updates
+#intents.voice_states = True  # Required for voice state updates
 
 bot = commands.Bot(command_prefix="!", intents=intents)
 bot.remove_command('help')
@@ -250,7 +251,11 @@ class SearchModal(discord.ui.Modal, title="Search Steam Market Items"):
         # Send all embeds together with the view
         await interaction.followup.send(embeds=embeds, view=view)
 
-
+# Function to log data
+def log_to_csv(user: discord.User, guild: discord.Guild, item_name):
+    with open("command_logs.csv", "a", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file)
+        writer.writerow([user.name, guild.name if guild else "DM",item_name])
 # You'll also need to modify the ItemButton class to handle the enhanced display
 class ItemButton(discord.ui.Button):
     def __init__(self, item_name, index):
@@ -281,7 +286,7 @@ class ItemButton(discord.ui.Button):
             embed.add_field(name="Lowest Price", value=item_data.get("lowest_price", "None"), inline=True)
             embed.add_field(name="Volume (24h)", value=item_data.get("volume", "None"), inline=True)
             embed.add_field(name="Median Price", value=item_data.get("median_price", "None"), inline=True)
-
+            log_to_csv(interaction.user, interaction.guild,self.item_name,)
             # Fetch the image URL
             image_url = get_item_icon_url(self.item_name)
             if image_url and image_url != "Item not found.":
@@ -309,11 +314,21 @@ class ResultsView(discord.ui.View):
         for i, item in enumerate(items, 1):
             self.add_item(ItemButton(item, i))
 
-@bot.tree.command(name="pricecheck", description="Search and check the price of Steam Market items")
+
+
+    
+
+@bot.tree.command(name="pricecheck2", description="Search and check the price of Steam Market items")
 async def pricecheck(interaction: discord.Interaction):
-    # Open the search modal
-    await interaction.response.send_modal(SearchModal())
-
-
+    try:
+        # Make sure this happens very quickly (within 3 seconds of command being triggered)
+        await interaction.response.send_modal(SearchModal())
+    except discord.errors.NotFound:
+        # If the interaction has expired, handle it gracefully
+        try:
+            await interaction.followup.send("The command timed out. Please try again.", ephemeral=True)
+        except:
+            # If we can't even send a followup, the interaction is completely gone
+            pass
 # Run the bot
 bot.run(TOKEN)
