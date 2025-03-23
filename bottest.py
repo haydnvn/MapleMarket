@@ -24,7 +24,7 @@ COOKIE = ""  # Add your Steam session cookie here if needed
 TOKEN = "NDkyNDQ2NjMxODU0MDgwMDEw.G07Y8P.w1xsdVoVhPajtBzn2XFyomXFmPIZBkFKzj0uAs"
 # Bot setup
 intents = discord.Intents.default()
-intents.message_content = True
+#intents.message_content = True
 #intents.voice_states = True  # Required for voice state updates
 
 bot = commands.Bot(command_prefix="!", intents=intents)
