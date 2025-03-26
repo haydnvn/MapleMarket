@@ -183,6 +183,7 @@ def get_highest_buy_order(item_name, app_id=216150):
 @bot.event
 async def on_ready():
     print(f'Logged in as {bot.user}')
+    print(f"This bot is in {len(bot.guilds)} servers!")
     await bot.change_presence(activity=discord.Game(name="/pricecheck"))
     try:
         synced = await bot.tree.sync()
