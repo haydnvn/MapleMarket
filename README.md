@@ -1,6 +1,6 @@
 # Steam Market Price Checker Discord Bot
 
-A Discord bot that allows users to search and check current Steam Market prices for CS:GO items. The bot provides real-time pricing data including lowest price, volume, median price, and highest buy orders.
+A Discord bot that allows users to search and check current Steam Market prices for Maplestory items. The bot provides real-time pricing data including lowest price, volume, median price, and highest buy orders.
 
 ## Features
 
