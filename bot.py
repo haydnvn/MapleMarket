@@ -16,7 +16,7 @@ import csv
 load_dotenv()
 
 # Configuration
-APP_ID = "216150"  # App ID for the game you're monitoring (CS:GO)
+APP_ID = "216150"  # App ID for the game you're monitoring (Maplestory)
 CHECK_INTERVAL = 300  # Check every 5 minutes (300 seconds)
 COOKIE = ""  # Add your Steam session cookie here if needed
 TOKEN = os.getenv('TOKEN')
